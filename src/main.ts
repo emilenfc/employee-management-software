@@ -24,7 +24,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('EMPLOYEE API')
-    .setDescription('GENERAL STARTER APIs')
+    .setDescription(' APIs')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

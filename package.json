@@ -1,7 +1,7 @@
 {
-  "name": "nestypeormpostgressql",
+  "name": "employeemanagementsystem",
   "version": "0.0.1",
-  "description": "authentication and authorization ",
+  "description": "employee attendance management system",
   "author": "IYADUKUNZE Emile",
   "private": true,
   "license": "UNLICENSED",

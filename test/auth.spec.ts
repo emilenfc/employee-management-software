@@ -11,11 +11,13 @@ import { Repository } from 'typeorm';
 import { UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/database/users/entities/user.entity';
+import { MailService } from 'src/database/mail/mail.service';
 
 
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: AuthService;
+  let mailService: MailService;
 
   const mockAuthService = {
     login: jest.fn(),
@@ -26,6 +28,11 @@ describe('AuthController', () => {
     resetPassword: jest.fn(),
   };
 
+  const mockMailService = {
+    sendPasswordResetEmail: jest.fn(),
+    sendWelcomeEmail: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
@@ -34,6 +41,10 @@ describe('AuthController', () => {
           provide: AuthService,
           useValue: mockAuthService,
         },
+        {
+          provide: MailService,
+          useValue: mockMailService,
+        }
       ],
     })
       .overrideGuard(JwtAuthGuard)
@@ -44,6 +55,11 @@ describe('AuthController', () => {
 
     controller = module.get<AuthController>(AuthController);
     authService = module.get<AuthService>(AuthService);
+    mailService = module.get<MailService>(MailService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -99,13 +115,14 @@ describe('AuthController', () => {
     });
   });
 });
-
 // auth.service.spec.ts
 
 describe('AuthService', () => {
   let service: AuthService;
   let userRepository: Repository<User>;
   let jwtService: JwtService;
+  let mailService: MailService;
+
 
   const mockUserRepository = {
     findOne: jest.fn(),
@@ -114,6 +131,10 @@ describe('AuthService', () => {
 
   const mockJwtService = {
     sign: jest.fn(),
+  };
+    const mockMailService = {
+    sendPasswordResetEmail: jest.fn(),
+    sendWelcomeEmail: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -128,6 +149,10 @@ describe('AuthService', () => {
           provide: JwtService,
           useValue: mockJwtService,
         },
+        {
+          provide: MailService,
+          useValue: mockMailService,
+        }
       ],
     }).compile();
 
