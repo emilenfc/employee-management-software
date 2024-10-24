@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -30,6 +31,13 @@ export class AuthController {
     @Body() authCredentialsDto: LoginDto,
   ): Promise<{ accessToken: string; user: any }> {
     return this.authService.login(authCredentialsDto);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  async logout(@Req() req:any): Promise<{ message: string }> {
+    const id = req.user.id
+    return this.authService.logout(id);
   }
 
   @Patch('/change-role/:userId')

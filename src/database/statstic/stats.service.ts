@@ -5,14 +5,9 @@ import { Attendance } from '../attendance/entities/attendance.entity';
 
 @Injectable()
 export class StatsService {
-
   async getTotalCounts() {
     try {
-      const [
-        totalUsers,
-        totalEmployee,
-        totalAttendance,
-      ] = await Promise.all([
+      const [totalUsers, totalEmployee, totalAttendance] = await Promise.all([
         User.count(),
         Employee.count(),
         Attendance.count(),

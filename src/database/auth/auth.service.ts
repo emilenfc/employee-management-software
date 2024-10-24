@@ -10,14 +10,29 @@ import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
+  private blacklistedTokens: Set<string> = new Set();
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private mailService: MailService,
+
   ) {}
+  addToBlacklist(id: string) {
+    this.blacklistedTokens.add(id);
+  }
+
+  isTokenBlacklisted(id: string): boolean {
+    return this.blacklistedTokens.has(id);
+  }
+  async removeToBlackList(id: string) {
+     this.blacklistedTokens.delete(id);
+  }
 
   async login(
     authcredentialsDto: LoginDto,
@@ -31,6 +46,7 @@ export class AuthService {
     });
 
     if (user && (await bcrypt.compare(password, user.password))) {
+      await this.removeToBlackList(user.id);
       const payload: any = { id: user.id };
       const accessToken = this.jwtService.sign(payload);
       return { accessToken, user };
@@ -40,7 +56,13 @@ export class AuthService {
       );
     }
   }
-
+   async logout(token: string): Promise<{ message: string }> {
+    if (!token) {
+      throw new BadRequestException('Token is required for logout');
+    }
+    this.addToBlacklist(token);
+    return { message: 'Logout successful' };
+  }
   async changeRole(userId: string, roleDto: RoleDto): Promise<any> {
     try {
       const user = await this.userRepository.findOne({
@@ -79,7 +101,12 @@ export class AuthService {
     user.resetCode = resetCode;
     await this.userRepository.save(user);
 
-    // TODO: add send email service
+    // Send reset code email
+    await this.mailService.sendResetCodeEmail({
+      email: user.email,
+      name: user.firstName,
+      resetCode: resetCode,
+    });
 
     return {
       message: 'reset code sent to ' + email + ', check your email',

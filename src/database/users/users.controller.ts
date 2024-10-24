@@ -63,7 +63,7 @@ export class UsersController {
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
-  
+
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete(':id')

@@ -30,8 +30,12 @@ export class EmployeeService {
     return data;
   }
 
-  async findAll(pageSize?: number, pageNumber?: number,active?: boolean,
-    search?: string,) {
+  async findAll(
+    pageSize?: number,
+    pageNumber?: number,
+    active?: boolean,
+    search?: string,
+  ) {
     const filter = {
       where: [],
       order: {
@@ -51,8 +55,13 @@ export class EmployeeService {
         { employeeIdentifier: ILike(`%${search}%`) },
       ]);
     }
-    console.log(filter)
-    return await this.paginationHelper.paginate(Employee, pageSize, pageNumber,filter);
+    console.log(filter);
+    return await this.paginationHelper.paginate(
+      Employee,
+      pageSize,
+      pageNumber,
+      filter,
+    );
   }
 
   findOne(id: string) {

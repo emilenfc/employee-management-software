@@ -1,4 +1,4 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
@@ -23,7 +23,7 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('GENERAL API')
+    .setTitle('EMPLOYEE API')
     .setDescription('GENERAL STARTER APIs')
     .setVersion('1.0')
     .addBearerAuth()

@@ -12,7 +12,12 @@ import {
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/roles/role.guard';
 import { Roles } from '../auth/roles/roles.decorator';
@@ -32,7 +37,12 @@ export class EmployeeController {
 
   @Get()
   @ApiQuery({ required: false, name: 'active', type: Boolean })
-  @ApiQuery({ required: false, name: 'search', description:"Search using first name, last name, email,employee identifier, phone number" })
+  @ApiQuery({
+    required: false,
+    name: 'search',
+    description:
+      'Search using first name, last name, email,employee identifier, phone number',
+  })
   @ApiQuery({ required: false, name: 'pageSize', type: Number })
   @ApiQuery({ required: false, name: 'pageNumber', type: Number })
   findAll(
@@ -41,8 +51,7 @@ export class EmployeeController {
     @Query('pageSize') pageSize?: number,
     @Query('pageNumber') pageNumber?: number,
   ) {
-    return this.employeeService.findAll(pageSize, pageNumber,active,
-      search);
+    return this.employeeService.findAll(pageSize, pageNumber, active, search);
   }
 
   @Get(':id')
